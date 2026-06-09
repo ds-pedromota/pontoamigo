@@ -8,15 +8,13 @@ const FORMATS = [
     key: "churrasco",
     emoji: "🔥",
     label: "Churrasco",
-    verdict: "Alto risco, alto apelo",
-    sub: "Atrai multidão mas exige planejamento rigoroso. Margem é comprimida pelo custo fixo de carne e preparo. Recomendado apenas com público confirmado.",
     scores: [
-      { key: "lucro",       val: 2, note: "Margem apertada por custo fixo alto" },
-      { key: "facilidade",  val: 1, note: "Alta dependência de preparo e terceiros" },
-      { key: "atencao",     val: 5, note: "Forte atrativo de público" },
-      { key: "fidelizacao", val: 3, note: "Retorno moderado" },
-      { key: "risco",       val: 1, note: "Desperdício alto se público falhar" },
-      { key: "ticket",      val: 2, note: "Ticket médio reduzido por pessoa" },
+      { key: "lucro",       val: 2 },
+      { key: "facilidade",  val: 1 },
+      { key: "atencao",     val: 5 },
+      { key: "fidelizacao", val: 3 },
+      { key: "risco",       val: 1 },
+      { key: "ticket",      val: 2 },
     ],
     axes: { musica: false, comida: true, tema: false, producao: true },
   },
@@ -24,15 +22,13 @@ const FORMATS = [
     key: "musica",
     emoji: "🎵",
     label: "Música ao Vivo",
-    verdict: "Alto potencial, risco de dependência",
-    sub: "O público fica mais tempo e tende a consumir mais. O risco está na dependência do artista. Apostar em músicos locais reduz custo e risco.",
     scores: [
-      { key: "lucro",       val: 3, note: "Depende do cachê vs. aumento em vendas" },
-      { key: "facilidade",  val: 2, note: "Depende de artista disponível e sonorização" },
-      { key: "atencao",     val: 5, note: "Maior fator de atração de público" },
-      { key: "fidelizacao", val: 4, note: "Cria hábito de frequência" },
-      { key: "risco",       val: 2, note: "Se artista falha, o evento perde razão de ser" },
-      { key: "ticket",      val: 3, note: "Permanência maior = mais consumo" },
+      { key: "lucro",       val: 3 },
+      { key: "facilidade",  val: 2 },
+      { key: "atencao",     val: 5 },
+      { key: "fidelizacao", val: 4 },
+      { key: "risco",       val: 2 },
+      { key: "ticket",      val: 3 },
     ],
     axes: { musica: true, comida: false, tema: false, producao: true },
   },
@@ -40,15 +36,13 @@ const FORMATS = [
     key: "porcoes",
     emoji: "🍟",
     label: "Porções",
-    verdict: "Melhor custo-benefício operacional",
-    sub: "Formato mais sustentável para testar regularidade. Baixo risco, boa margem. Pode ser combinado com música para escalar o apelo sem escalar o custo.",
     scores: [
-      { key: "lucro",       val: 4, note: "Margem boa com preparo simples" },
-      { key: "facilidade",  val: 4, note: "Fácil de executar com estrutura existente" },
-      { key: "atencao",     val: 3, note: "Atração moderada, não é diferencial único" },
-      { key: "fidelizacao", val: 3, note: "Pode virar hábito se regularizado" },
-      { key: "risco",       val: 4, note: "Baixo desperdício, produção sob demanda" },
-      { key: "ticket",      val: 4, note: "Aumenta ticket sem complexidade" },
+      { key: "lucro",       val: 4 },
+      { key: "facilidade",  val: 4 },
+      { key: "atencao",     val: 3 },
+      { key: "fidelizacao", val: 3 },
+      { key: "risco",       val: 4 },
+      { key: "ticket",      val: 4 },
     ],
     axes: { musica: false, comida: true, tema: false, producao: false },
   },
@@ -56,15 +50,13 @@ const FORMATS = [
     key: "tematico",
     emoji: "🎉",
     label: "Temático",
-    verdict: "Maior potencial de marca",
-    sub: "Temáticos criam conteúdo orgânico e diferenciação. Risco de criar expectativa que o cotidiano não sustenta. Ideal para datas especiais e testes mensais.",
     scores: [
-      { key: "lucro",       val: 3, note: "Margem ok, depende do tema escolhido" },
-      { key: "facilidade",  val: 3, note: "Exige criatividade e alguma decoração" },
-      { key: "atencao",     val: 4, note: "Forte diferenciação local" },
-      { key: "fidelizacao", val: 5, note: "Maior potencial de conteúdo e recorrência" },
-      { key: "risco",       val: 3, note: "Risco moderado de frustrar expectativa criada" },
-      { key: "ticket",      val: 3, note: "Ticket médio com variação por tema" },
+      { key: "lucro",       val: 3 },
+      { key: "facilidade",  val: 3 },
+      { key: "atencao",     val: 4 },
+      { key: "fidelizacao", val: 5 },
+      { key: "risco",       val: 3 },
+      { key: "ticket",      val: 3 },
     ],
     axes: { musica: false, comida: true, tema: true, producao: true },
   },
@@ -79,11 +71,81 @@ const INDICATORS = [
   { key: "ticket",      icon: "🧾", name: "Ticket Médio" },
 ];
 
+// Notas automáticas por indicador e nível de estrela (1-5)
+const PRESET_NOTES = {
+  lucro: [
+    "Margem negativa — risco alto de prejuízo",
+    "Margem apertada, exige controle rigoroso",
+    "Margem aceitável com bom gerenciamento",
+    "Margem saudável, formato bem precificado",
+    "Margem excelente, formato lucrativo",
+  ],
+  facilidade: [
+    "Operação inviável sem equipe especializada",
+    "Exige muita preparação e terceiros",
+    "Executável com planejamento adequado",
+    "Fácil com a estrutura atual",
+    "Operação simples, sem dependência externa",
+  ],
+  atencao: [
+    "Sem poder de atração",
+    "Atração fraca, público limitado",
+    "Atração moderada",
+    "Boa atração de público",
+    "Alto poder de atração, evento destaque",
+  ],
+  fidelizacao: [
+    "Não gera retorno do público",
+    "Fidelização fraca",
+    "Fidelização moderada",
+    "Cria hábito de frequência",
+    "Fidelização excelente, cria comunidade",
+  ],
+  risco: [
+    "Risco crítico — descartável sem garantia de público",
+    "Alto risco operacional",
+    "Risco gerenciável com planejamento",
+    "Baixo risco",
+    "Operação de baixíssimo risco",
+  ],
+  ticket: [
+    "Ticket muito abaixo do esperado",
+    "Ticket fraco por pessoa",
+    "Ticket médio adequado",
+    "Bom ticket — permanência eleva consumo",
+    "Ticket excelente por presença",
+  ],
+};
+
+// Análise dinâmica baseada na pontuação total
+const getDynamicAnalysis = (pct) => {
+  if (pct >= 83) return {
+    verdict: "Formato sólido — prioridade de execução",
+    sub: "Indicadores equilibrados com forte retorno esperado. Baixo risco e boa margem tornam este formato prioritário para os próximos eventos.",
+  };
+  if (pct >= 67) return {
+    verdict: "Bom potencial, pontos de atenção",
+    sub: "Formato promissor com alguns riscos controláveis. Vale testar com monitoramento próximo dos indicadores mais fracos.",
+  };
+  if (pct >= 50) return {
+    verdict: "Potencial mediano — exige ajustes",
+    sub: "Há aspectos positivos, mas riscos ou margens comprometem o resultado. Considere combinar com outros formatos para equilibrar.",
+  };
+  if (pct >= 33) return {
+    verdict: "Alto risco, retorno incerto",
+    sub: "A soma de riscos operacionais e margem fraca exige cuidado. Execute apenas com público confirmado e estrutura garantida.",
+  };
+  return {
+    verdict: "Formato inviável no estado atual",
+    sub: "Pontuação crítica — execução neste formato provavelmente gerará prejuízo ou desgaste operacional sem retorno proporcional.",
+  };
+};
+
 const AXES = [
-  { key: "musica",   label: "Com música",     opts: ["Sem", "Com"] },
-  { key: "comida",   label: "Com comida",     opts: ["Só bebida", "Com comida"] },
-  { key: "tema",     label: "Temático",       opts: ["Neutro", "Temático"] },
-  { key: "producao", label: "Alta produção",  opts: ["Simples", "Elaborado"] },
+  { key: "musica",   label: "Com música",    opts: ["Sem", "Com"] },
+  { key: "comida",   label: "Com comida",    opts: ["Só bebida", "Com comida"] },
+  { key: "tema",     label: "Temático",      opts: ["Neutro", "Temático"] },
+  { key: "producao", label: "Alta produção", opts: ["Simples", "Elaborado"] },
 ];
 
 const valToColor = (v) => {
@@ -93,11 +155,7 @@ const valToColor = (v) => {
 };
 
 const valToLabel = (v) => {
-  if (v === 1) return "Crítico";
-  if (v === 2) return "Fraco";
-  if (v === 3) return "Regular";
-  if (v === 4) return "Bom";
-  return "Excelente";
+  return ["Crítico", "Fraco", "Regular", "Bom", "Excelente"][v - 1] ?? "";
 };
 
 const initAllScores = () => {
@@ -105,7 +163,7 @@ const initAllScores = () => {
   FORMATS.forEach((f) => {
     result[f.key] = {};
     f.scores.forEach((s) => {
-      result[f.key][s.key] = { val: s.val, note: s.note };
+      result[f.key][s.key] = { val: s.val, note: PRESET_NOTES[s.key][s.val - 1] };
     });
   });
   return result;
@@ -142,7 +200,7 @@ function StarRating({ val, onChange }) {
             userSelect: "none",
             lineHeight: 1,
             display: "inline-block",
-            transform: i === display && hover !== null ? "scale(1.25)" : "scale(1)",
+            transform: hover !== null && i === hover ? "scale(1.3)" : "scale(1)",
           }}
         >
           ★
@@ -156,6 +214,13 @@ function EditableNote({ note, onChange }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(note);
   const [hovered, setHovered] = useState(false);
+
+  // Sincroniza draft quando a nota muda externamente (ex: troca de estrela)
+  const [prevNote, setPrevNote] = useState(note);
+  if (note !== prevNote) {
+    setPrevNote(note);
+    if (!editing) setDraft(note);
+  }
 
   if (editing) {
     return (
@@ -225,7 +290,6 @@ function IndicatorCard({ indicator, val, note, onScoreChange, onNoteChange }) {
         display: "flex",
         flexDirection: "column",
         gap: 0,
-        transition: "border-color 0.2s",
       }}
     >
       <span style={{ fontSize: 22, marginBottom: 8 }}>{indicator.icon}</span>
@@ -254,7 +318,6 @@ function IndicatorCard({ indicator, val, note, onScoreChange, onNoteChange }) {
             letterSpacing: "0.08em",
             textTransform: "uppercase",
             color,
-            marginLeft: 2,
           }}
         >
           {valToLabel(val)}
@@ -280,14 +343,7 @@ function AxisToggle({ axis, value, onChange }) {
       }}
     >
       <span style={{ fontSize: 12, fontWeight: 500, flex: 1, color: BLACK }}>{axis.label}</span>
-      <div
-        style={{
-          display: "flex",
-          borderRadius: 50,
-          overflow: "hidden",
-          border: "1px solid rgba(0,0,0,0.12)",
-        }}
-      >
+      <div style={{ display: "flex", borderRadius: 50, overflow: "hidden", border: "1px solid rgba(0,0,0,0.12)" }}>
         {axis.opts.map((opt, i) => {
           const sel = (i === 1) === value;
           return (
@@ -316,30 +372,26 @@ function AxisToggle({ axis, value, onChange }) {
 }
 
 function ProgressBar({ pct }) {
+  const barColor = pct >= 67 ? "#639922" : pct >= 40 ? YELLOW : "#E24B4A";
   return (
     <div>
       <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", letterSpacing: 1, textTransform: "uppercase" }}>
         Potencial Geral
       </span>
-      <div
-        style={{
-          height: 6,
-          background: "rgba(255,255,255,0.12)",
-          borderRadius: 99,
-          overflow: "hidden",
-          marginTop: 8,
-        }}
-      >
+      <div style={{ height: 6, background: "rgba(255,255,255,0.12)", borderRadius: 99, overflow: "hidden", marginTop: 8 }}>
         <div
           style={{
             height: "100%",
             width: `${pct}%`,
-            background: YELLOW,
+            background: barColor,
             borderRadius: 99,
-            transition: "width 0.4s ease",
+            transition: "width 0.4s ease, background 0.4s ease",
           }}
         />
       </div>
+      <span style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", marginTop: 4, display: "block" }}>
+        {pct}%
+      </span>
     </div>
   );
 }
@@ -359,11 +411,12 @@ export default function PontoAmigoDashboard() {
   const scores = allScores[activeKey];
 
   const updateScore = (indicatorKey, val) => {
+    const presetNote = PRESET_NOTES[indicatorKey]?.[val - 1] ?? "";
     setAllScores((prev) => ({
       ...prev,
       [activeKey]: {
         ...prev[activeKey],
-        [indicatorKey]: { ...prev[activeKey][indicatorKey], val },
+        [indicatorKey]: { val, note: presetNote },
       },
     }));
   };
@@ -381,6 +434,7 @@ export default function PontoAmigoDashboard() {
   const total = Object.values(scores).reduce((a, s) => a + s.val, 0);
   const max = INDICATORS.length * 5;
   const pct = Math.round((total / max) * 100);
+  const { verdict, sub } = getDynamicAnalysis(pct);
 
   return (
     <div
@@ -491,7 +545,7 @@ export default function PontoAmigoDashboard() {
           ))}
         </div>
 
-        {/* Summary bar */}
+        {/* Summary bar — totalmente dinâmico */}
         <div
           style={{
             background: BLACK,
@@ -504,14 +558,20 @@ export default function PontoAmigoDashboard() {
           }}
         >
           <div style={{ textAlign: "center", flexShrink: 0 }}>
-            <div style={{ fontSize: 40, fontWeight: 800, color: YELLOW, lineHeight: 1 }}>{total}/{max}</div>
+            <div style={{ fontSize: 40, fontWeight: 800, color: valToColor(Math.round(total / INDICATORS.length)), lineHeight: 1, transition: "color 0.3s" }}>
+              {total}/{max}
+            </div>
             <div style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", letterSpacing: 2, textTransform: "uppercase", marginTop: 4 }}>
               Pontuação
             </div>
           </div>
           <div style={{ flex: 1, minWidth: 160 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 4 }}>{format.verdict}</div>
-            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", lineHeight: 1.55 }}>{format.sub}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 4, transition: "all 0.3s" }}>
+              {verdict}
+            </div>
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", lineHeight: 1.55, transition: "all 0.3s" }}>
+              {sub}
+            </div>
           </div>
           <div style={{ flex: 1, minWidth: 120 }}>
             <ProgressBar pct={pct} />
