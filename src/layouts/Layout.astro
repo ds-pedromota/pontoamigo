@@ -1,0 +1,164 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title       = 'Conveniência Ponto Amigo – Copa 2026',
+  description = 'Venha torcer pelo Brasil na Conveniência Ponto Amigo em Sorocaba. Churrasco, cerveja gelada, pagode e muito clima de Copa!',
+} = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <title>{title}</title>
+  <link rel="icon" href="/logo.jpeg" />
+
+  <!-- OG -->
+  <meta property="og:title"       content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image"       content="/2.jpeg" />
+  <meta property="og:type"        content="website" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <slot />
+
+  <script>
+    /* ── Reveal on scroll ── */
+    const io = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); }),
+      { threshold: 0.08, rootMargin: '0px 0px -56px 0px' }
+    );
+    document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+
+    /* ── Stagger siblings ── */
+    document.querySelectorAll('[data-stagger]').forEach(parent => {
+      parent.querySelectorAll('[data-reveal]').forEach((child, i) => {
+        (child as HTMLElement).style.transitionDelay = `${i * 110}ms`;
+      });
+    });
+
+    /* ── Nav shrink on scroll ── */
+    const nav = document.querySelector('.nav') as HTMLElement | null;
+    window.addEventListener('scroll', () => {
+      if (!nav) return;
+      nav.classList.toggle('nav--scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    /* ── Countdown ── */
+    // Brasil x Marrocos: 13 Jun 2026, 19:00 Brasília (UTC-3) = 22:00 UTC
+    const GAME = new Date('2026-06-13T22:00:00Z');
+    function tick() {
+      const diff = GAME.getTime() - Date.now();
+      if (diff <= 0) {
+        const cd = document.querySelector<HTMLElement>('.countdown');
+        if (cd) cd.innerHTML = '<p class="live-now">🔴 AO VIVO AGORA!</p>';
+        return;
+      }
+      const pad = (n: number) => String(n).padStart(2, '0');
+      const d = Math.floor(diff / 86_400_000);
+      const h = Math.floor((diff % 86_400_000) / 3_600_000);
+      const m = Math.floor((diff % 3_600_000) / 60_000);
+      const s = Math.floor((diff % 60_000) / 1_000);
+      const set = (id: string, v: number) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = pad(v);
+      };
+      set('cd-d', d); set('cd-h', h); set('cd-m', m); set('cd-s', s);
+    }
+    tick(); setInterval(tick, 1000);
+
+    /* ── Parallax hero blob ── */
+    const blob = document.querySelector<HTMLElement>('.hero-blob');
+    window.addEventListener('scroll', () => {
+      if (blob) blob.style.transform = `translateY(${window.scrollY * 0.25}px)`;
+    }, { passive: true });
+  </script>
+</body>
+</html>
+
+<style is:global>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #090909;
+    --bg2:      #0e0e0e;
+    --bg3:      #141414;
+    --surface:  rgba(255,255,255,0.04);
+    --border:   rgba(255,255,255,0.08);
+    --gold:     #FFD000;
+    --gold2:    #FFA500;
+    --gold-dim: rgba(255,208,0,0.12);
+    --green:    #1B5E20;
+    --green2:   #2E7D32;
+    --text:     #EFEFEF;
+    --text2:    #888;
+    --text3:    #444;
+    --r:        14px;
+    --rl:       22px;
+    --ease:     cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--green2); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+  /* ── Reveal system ── */
+  [data-reveal] {
+    opacity: 0;
+    transition:
+      opacity  0.85s var(--ease),
+      transform 0.85s var(--ease);
+  }
+  [data-reveal],
+  [data-reveal="up"]    { transform: translateY(52px); }
+  [data-reveal="left"]  { transform: translateX(-60px); }
+  [data-reveal="right"] { transform: translateX(60px); }
+  [data-reveal="scale"] { transform: scale(0.87) translateY(20px); }
+  [data-reveal="fade"]  { transform: none; }
+
+  [data-reveal].is-visible {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* ── Helpers ── */
+  .display { font-family: 'Bebas Neue', cursive; line-height: 0.93; letter-spacing: 0.02em; }
+  .eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+  .text-gold {
+    background: linear-gradient(130deg, #FFD000 0%, #FFA000 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .glow-gold  { box-shadow: 0 0 48px rgba(255,208,0,.2), 0 0 100px rgba(255,208,0,.08); }
+  .glow-green { box-shadow: 0 0 48px rgba(46,125,50,.3), 0 0 100px rgba(46,125,50,.1); }
+
+  .live-now {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    animation: pulse 1s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+</style>
