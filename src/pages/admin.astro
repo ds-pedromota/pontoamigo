@@ -1,0 +1,10 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Dashboard from '../components/PontoAmigoDashboard.jsx';
+---
+
+<Layout title="Admin · Ponto Amigo" description="Painel administrativo de eventos">
+  <div style="min-height: 100vh; background: #EEEEE8; padding: 40px 20px;">
+    <Dashboard client:load />
+  </div>
+</Layout>
