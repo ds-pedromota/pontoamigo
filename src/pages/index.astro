@@ -187,8 +187,8 @@ const features = [
         <div class="combo-media" data-reveal="left">
           <div class="combo-img-wrap glow-green">
             <img src="/1.jpeg" alt="Combo da Galera — Porção calabresa + batata + 4 cervejas" />
+            <div class="combo-badge display">Promoção<br/>especial</div>
           </div>
-          <div class="combo-badge display">Promoção<br/>especial</div>
         </div>
 
         <div class="combo-text" data-reveal="right">
@@ -277,9 +277,8 @@ const features = [
           <div class="loc-card-icon">🕐</div>
           <h3 class="loc-card-title display">Horários</h3>
           <table class="hours-table">
-            <tr><td>Segunda – Sexta</td><td>07h – 23h</td></tr>
-            <tr><td>Sábado</td>        <td>07h – 23h</td></tr>
-            <tr><td>Domingo</td>       <td>08h – 22h</td></tr>
+            <tr><td>Segunda – Sexta</td><td>07h – 21h</td></tr>
+            <tr><td>Domingo</td>       <td>07h – 17h</td></tr>
             <tr class="hours-special"><td>Dias de Jogo</td><td>Até acabar! 🎉</td></tr>
           </table>
         </div>
@@ -900,11 +899,15 @@ const features = [
 
   .combo-img-wrap {
     border-radius: var(--rl);
-    overflow: hidden;
+    position: relative;
     border: 1px solid rgba(255,255,255,.12);
   }
 
-  .combo-img-wrap img { width: 100%; display: block; }
+  .combo-img-wrap img {
+    width: 100%;
+    display: block;
+    border-radius: var(--rl);
+  }
 
   .combo-badge {
     position: absolute;
