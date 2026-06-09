@@ -3,6 +3,9 @@ import { useState } from "react";
 const YELLOW = "#FFD600";
 const BLACK = "#111111";
 
+// Cole aqui a URL do Apps Script após implantá-lo (Extensions > Apps Script > Deploy > Web App)
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz7U-3YVqbgPKjNT17q9_KF13wj2S3GtUBAU7ySqHQMYtT3wN-YoeZBz7vZsmxJY95h/exec";
+
 const FORMATS = [
   {
     key: "churrasco",
@@ -402,6 +405,7 @@ export default function PontoAmigoDashboard() {
   const [allScores, setAllScores] = useState(initAllScores);
 
   const format = FORMATS.find((f) => f.key === activeKey);
+  const [exportStatus, setExportStatus] = useState("idle"); // idle | loading | ok | error
 
   const handleFormatChange = (f) => {
     setActiveKey(f.key);
@@ -435,6 +439,45 @@ export default function PontoAmigoDashboard() {
   const max = INDICATORS.length * 5;
   const pct = Math.round((total / max) * 100);
   const { verdict, sub } = getDynamicAnalysis(pct);
+
+  const handleExport = async () => {
+    if (APPS_SCRIPT_URL === "COLE_A_URL_DO_APPS_SCRIPT_AQUI") {
+      alert("Configure a URL do Apps Script no arquivo PontoAmigoDashboard.jsx antes de exportar.");
+      return;
+    }
+    setExportStatus("loading");
+    const now = new Date();
+    const payload = {
+      timestamp: now.toLocaleString("pt-BR"),
+      formato: `${format.emoji} ${format.label}`,
+      lucro_val:       scores.lucro.val,       lucro_nota:       scores.lucro.note,
+      facilidade_val:  scores.facilidade.val,  facilidade_nota:  scores.facilidade.note,
+      atencao_val:     scores.atencao.val,      atencao_nota:     scores.atencao.note,
+      fidelizacao_val: scores.fidelizacao.val,  fidelizacao_nota: scores.fidelizacao.note,
+      risco_val:       scores.risco.val,        risco_nota:       scores.risco.note,
+      ticket_val:      scores.ticket.val,       ticket_nota:      scores.ticket.note,
+      total:           `${total}/${max}`,
+      potencial_pct:   pct,
+      analise:         verdict,
+      musica:          axes.musica,
+      comida:          axes.comida,
+      tematico:        axes.tema,
+      producao:        axes.producao,
+    };
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(payload),
+      });
+      setExportStatus("ok");
+      setTimeout(() => setExportStatus("idle"), 3500);
+    } catch {
+      setExportStatus("error");
+      setTimeout(() => setExportStatus("idle"), 3500);
+    }
+  };
 
   return (
     <div
@@ -593,9 +636,45 @@ export default function PontoAmigoDashboard() {
         }}
       >
         <span style={{ fontSize: 11, color: "#888" }}>Jiupter Growth &amp; Tech · Uso interno — Ponto Amigo</span>
-        <span style={{ fontSize: 11, color: "#aaa", fontStyle: "italic" }}>
-          Avaliação estratégica de eventos · {new Date().toLocaleDateString("pt-BR")}
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span style={{ fontSize: 11, color: "#aaa", fontStyle: "italic" }}>
+            Avaliação estratégica de eventos · {new Date().toLocaleDateString("pt-BR")}
+          </span>
+          <button
+            onClick={handleExport}
+            disabled={exportStatus === "loading"}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "7px 16px",
+              borderRadius: 50,
+              border: "1.5px solid rgba(0,0,0,0.15)",
+              background: exportStatus === "ok" ? "#639922" : exportStatus === "error" ? "#E24B4A" : BLACK,
+              color: exportStatus === "ok" || exportStatus === "error" ? "#fff" : YELLOW,
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: exportStatus === "loading" ? "wait" : "pointer",
+              letterSpacing: "0.04em",
+              transition: "background 0.2s, color 0.2s",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {exportStatus === "loading" && "Exportando…"}
+            {exportStatus === "ok" && "✓ Enviado!"}
+            {exportStatus === "error" && "✗ Erro — tente novamente"}
+            {exportStatus === "idle" && (
+              <>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                Exportar para Sheets
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );
