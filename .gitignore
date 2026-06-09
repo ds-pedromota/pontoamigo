@@ -17,8 +17,8 @@ dist/
 .DS_Store
 Thumbs.db
 
-# raw assets (já estão em public/)
-1.jpeg
-2.jpeg
-logo.jpeg
-1.mp4
+# raw assets duplicados na raiz (cópias canônicas estão em public/)
+/1.jpeg
+/2.jpeg
+/logo.jpeg
+/1.mp4
