@@ -316,8 +316,22 @@ const next   = events.find(e => !e.isPast) ?? events.at(-1);
   display: block;
 }
 @media (max-width: 680px) {
-  .hero { padding: 90px 24px 50px; }
-  .hero-flyer { display: none; }
+  .hero {
+    padding: 90px 24px 40px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .hero-flyer {
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: rotate(1.5deg);
+    width: 100%;
+    max-width: 240px;
+    margin: 32px auto 0;
+    display: block;
+    animation: flyerIn 1.3s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+  }
 }
 </style>
 
@@ -731,8 +745,25 @@ const next   = events.find(e => !e.isPast) ?? events.at(-1);
     padding: 24px 0;
   }
   .event-day { font-size: 40px; }
-  .event-img-wrap { display: none; }
-  .event-has-img { grid-template-columns: 60px 1px 1fr; }
+  .event-has-img {
+    grid-template-columns: 60px 1px 1fr;
+    grid-template-rows: auto auto;
+  }
+  .event-img-wrap {
+    display: block;
+    grid-column: 1 / -1;
+    width: 100%;
+    height: 150px;
+    margin-top: 16px;
+    border-radius: 10px;
+  }
+  .event-img-wrap img {
+    aspect-ratio: unset;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+  }
   .local-inner { grid-template-columns: 1fr; gap: 40px; }
   .local-section { padding: 60px 24px; }
   .footer { padding: 40px 24px; }
