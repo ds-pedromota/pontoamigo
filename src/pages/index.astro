@@ -114,36 +114,61 @@ const next   = events.find(e => !e.isPast) ?? events.at(-1);
         <p>Jardim Residencial Villa Amato</p>
         <p>Sorocaba — SP</p>
       </div>
-      <a
-        href="https://maps.google.com/?q=Av.+Três+de+Março,+6015+Sorocaba+SP"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="local-btn"
-      >
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-        </svg>
-        Abrir no Google Maps
-      </a>
+      <div class="local-btns">
+        <a
+          href="https://maps.google.com/?q=Av.+Três+de+Março,+6015+Sorocaba+SP"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="local-btn"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+          Ver no Maps
+        </a>
+        <a
+          href="https://g.page/r/Cf9uLHyjOAAEEAE/review"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="local-btn local-btn--review"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          Avaliar no Google
+        </a>
+      </div>
     </div>
     <div class="local-hours" data-reveal="right">
       <span class="eyebrow">Funcionamento</span>
       <div class="hours-grid">
         <div class="hours-row">
-          <span>Seg – Sex</span>
-          <span>07h – 23h</span>
+          <span>Seg – Sáb</span>
+          <span>07h – 21h</span>
         </div>
         <div class="hours-row">
-          <span>Sábado</span>
-          <span>07h – 00h</span>
+          <span>Dom e feriados</span>
+          <span>07h – 17h</span>
         </div>
-        <div class="hours-row">
-          <span>Domingo</span>
-          <span>08h – 22h</span>
+        <div class="hours-row hours-row--highlight">
+          <span>Dias de evento</span>
+          <span>até o último cliente</span>
         </div>
       </div>
-      <p class="hours-note">Horários de eventos podem variar — confira a agenda.</p>
+      <p class="hours-note">Em dias de jogo e eventos especiais ficamos abertos enquanto tiver movimento.</p>
     </div>
+  </div>
+
+  <!-- Mapa gratuito via iframe -->
+  <div class="local-map-wrap" data-reveal="up">
+    <iframe
+      class="local-map-iframe"
+      src="https://maps.google.com/maps?q=-23.448514272038203,-47.37712692209014&z=15&output=embed"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      title="Localização Conveniência Ponto Amigo"
+      allowfullscreen
+    ></iframe>
   </div>
 </section>
 
@@ -152,6 +177,14 @@ const next   = events.find(e => !e.isPast) ?? events.at(-1);
   <img src="/logo.jpeg" alt="Ponto Amigo" class="footer-logo" />
   <p>© 2026 Conveniência Ponto Amigo · Sorocaba, SP</p>
   <p class="footer-tagline">O ponto onde todo mundo vira amigo.</p>
+  <a
+    href="https://g.page/r/Cf9uLHyjOAAEEAE/review"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="footer-review"
+  >
+    ⭐ Deixe sua avaliação no Google
+  </a>
 </footer>
 
 </Layout>
@@ -569,6 +602,11 @@ const next   = events.find(e => !e.isPast) ?? events.at(-1);
   color: rgba(255,255,255,0.5);
   line-height: 1.9;
 }
+.local-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
 .local-btn {
   display: inline-flex;
   align-items: center;
@@ -588,6 +626,14 @@ const next   = events.find(e => !e.isPast) ?? events.at(-1);
   background: rgba(255,208,0,0.08);
   border-color: rgba(255,208,0,0.5);
 }
+.local-btn--review {
+  color: #fff;
+  border-color: rgba(255,255,255,0.15);
+}
+.local-btn--review:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.35);
+}
 .hours-grid {
   display: flex;
   flex-direction: column;
@@ -604,11 +650,36 @@ const next   = events.find(e => !e.isPast) ?? events.at(-1);
 }
 .hours-row span:first-child { color: rgba(255,255,255,0.5); }
 .hours-row span:last-child  { color: #fff; font-weight: 600; }
+.hours-row--highlight span:first-child { color: var(--gold); }
+.hours-row--highlight span:last-child  { color: var(--gold); font-style: italic; }
 .hours-note {
   font-size: 11px;
   color: rgba(255,255,255,0.2);
   margin-top: 16px;
   line-height: 1.6;
+}
+
+/* ═══ MAPA ═══ */
+.local-map-wrap {
+  max-width: 860px;
+  margin: 48px auto 0;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.07);
+  height: 380px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+  position: relative;
+}
+.local-map-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+  /* dark mode: inverte cores e corrige matiz — ruas escuras, água escura */
+  filter: invert(92%) hue-rotate(180deg) saturate(0.85) brightness(0.9);
+}
+@media (max-width: 680px) {
+  .local-map-wrap { height: 280px; margin-top: 36px; border-radius: 12px; }
 }
 
 /* ═══ FOOTER ═══ */
@@ -637,6 +708,16 @@ const next   = events.find(e => !e.isPast) ?? events.at(-1);
   color: rgba(255,255,255,0.12) !important;
   font-style: italic;
 }
+.footer-review {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,208,0,0.4);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  margin-top: 6px;
+  transition: color 0.2s;
+}
+.footer-review:hover { color: rgba(255,208,0,0.8); }
 
 /* ═══ RESPONSIVE ═══ */
 @media (max-width: 680px) {
